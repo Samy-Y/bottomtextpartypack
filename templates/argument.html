@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet Argument Simulator</title>
+    <link rel="stylesheet" href="https://css.hackclub.com/theme.css">
+    <link rel="stylesheet" href="https://css.hackclub.com/fonts.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            color: var(--snow);
+            font-family: "Phantom Sans", sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-3);
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: auto;
+            padding: var(--spacing-4);
+            border-radius: var(--radii-extra);
+            background: var(--darkless);
+            box-shadow: var(--shadow-elevated);
+            border: 2px solid var(--red);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .flame-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, 
+                var(--orange) 0%, 
+                var(--red) 30%, 
+                var(--orange) 50%, 
+                var(--red) 70%, 
+                var(--orange) 100%);
+            background-size: 200% 100%;
+            animation: flameMove 3s infinite linear;
+        }
+        
+        @keyframes flameMove {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+        
+        h1 {
+            font-size: var(--font-6);
+            line-height: var(--line-height-heading);
+            letter-spacing: var(--letter-spacing-title);
+            text-transform: uppercase;
+            color: var(--red);
+            margin: var(--spacing-2) 0 var(--spacing-3);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+        }
+        
+        .title-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 0 auto;
+        }
+        
+        .title-wrapper::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: var(--red);
+            border-radius: 3px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: var(--font-3);
+            color: var(--muted);
+            margin-bottom: var(--spacing-4);
+        }
+        
+        #topic {
+            color: var(--yellow);
+            font-weight: var(--font-weight-bold);
+            display: inline-block;
+            padding: var(--spacing-1) var(--spacing-2);
+            background: var(--darker);
+            border-radius: var(--radii-small);
+            border-left: 3px solid var(--orange);
+            margin-left: var(--spacing-1);
+        }
+        
+        .chat-box {
+            background: var(--sunken);
+            padding: var(--spacing-3);
+            border-radius: var(--radii-default);
+            box-shadow: var(--shadow-small);
+            min-height: 200px;
+            text-align: left;
+            font-size: var(--font-2);
+            margin-bottom: var(--spacing-3);
+            overflow-y: auto;
+            max-height: 300px;
+            border: 1px solid var(--darkless);
+        }
+        
+        .chat-box p {
+            margin: var(--spacing-2) 0;
+            line-height: var(--line-height-body);
+            position: relative;
+            padding: var(--spacing-2) var(--spacing-2) var(--spacing-2) var(--spacing-3);
+            border-radius: var(--radii-small);
+        }
+        
+        .chat-box p:nth-child(odd) {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .chat-box p strong {
+            font-weight: var(--font-weight-bold);
+            display: block;
+            margin-bottom: var(--spacing-1);
+        }
+        
+        .chat-box p:nth-child(odd) strong {
+            color: var(--orange);
+        }
+        
+        .chat-box p:nth-child(even) strong {
+            color: var(--cyan);
+        }
+        
+        textarea {
+            width: 100%;
+            height: 100px;
+            background: var(--sheet);
+            color: var(--black);
+            border-radius: var(--radii-default);
+            padding: var(--spacing-2);
+            font-size: var(--font-2);
+            border: 2px solid var(--slate);
+            transition: all 0.2s ease;
+            resize: vertical;
+            font-family: "Phantom Sans", sans-serif;
+            margin-bottom: var(--spacing-3);
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px rgba(80, 200, 255, 0.2);
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: var(--spacing-3);
+            gap: var(--spacing-3);
+        }
+        
+        /* Using theme's button styles with customization */
+        .button {
+            display: inline-block;
+            padding: var(--spacing-2) var(--spacing-3);
+            font-size: var(--font-2);
+            font-weight: var(--font-weight-bold);
+            color: var(--white);
+            background: var(--primary);
+            border-radius: var(--radii-circle);
+            box-shadow: var(--shadow-card);
+            transition: transform 0.125s ease-in-out, box-shadow 0.125s ease-in-out;
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-headline);
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .button:hover, .button:focus {
+            transform: scale(1.0625);
+            box-shadow: var(--shadow-elevated);
+        }
+        
+        .button.topic-button {
+            background: var(--orange);
+        }
+        
+        .button.fight-button {
+            background-image: radial-gradient(
+                ellipse farthest-corner at top left,
+                var(--orange),
+                var(--red)
+            );
+        }
+        
+        .emoji {
+            font-size: 1.2em;
+            margin-right: var(--spacing-1);
+            display: inline-block;
+        }
+        
+        .footer {
+            margin-top: var(--spacing-4);
+            color: var(--muted);
+            font-size: var(--font-1);
+            text-align: center;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: var(--spacing-3);
+            padding-top: var(--spacing-2);
+            border-top: 1px solid var(--darkless);
+            font-size: var(--font-1);
+            color: var(--muted);
+        }
+        
+        .stats div {
+            text-align: center;
+        }
+        
+        .stats .value {
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-2);
+            color: var(--cyan);
+        }
+        
+        /* Responsive */
+        @media screen and (max-width: 48em) {
+            .container {
+                padding: var(--spacing-3);
+            }
+            
+            .button-container {
+                flex-direction: column;
+                gap: var(--spacing-2);
+            }
+            
+            h1 {
+                font-size: var(--font-5);
+            }
+            
+            .stats {
+                flex-wrap: wrap;
+            }
+            
+            .stats div {
+                flex: 1 0 33%;
+                margin-bottom: var(--spacing-2);
+            }
+        }
+        
+        /* Loading effect */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .loading {
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="flame-animation"></div>
+        <div class="title-wrapper">
+            <h1>🔥 Internet Argument Simulator 🔥</h1>
+        </div>
+        <p class="subtitle"><strong>Current Topic:</strong> <span id="topic">{{ topic }}</span></p>
+
+        <div class="chat-box" id="chat">
+            <p><strong>AI Opponent:</strong> Ready to argue? Try me with your hottest take!</p>
+        </div>
+
+        <textarea id="userInput" placeholder="Type your argument here... Be controversial!"></textarea>
+        
+        <div class="button-container">
+            <button class="button topic-button" onclick="getNewTopic()">
+                <span class="emoji">🎲</span>New Topic
+            </button>
+            <button class="button fight-button" onclick="sendArgument()">
+                <span class="emoji">💥</span>Fight!
+            </button>
+        </div>
+        
+        <div class="stats">
+            <div>
+                <div class="value" id="argumentCount">0</div>
+                <div>Arguments</div>
+            </div>
+            <div>
+                <div class="value" id="winStreak">0</div>
+                <div>Win Streak</div>
+            </div>
+            <div>
+                <div class="value" id="topicCount">1</div>
+                <div>Topics</div>
+            </div>
+        </div>
+        
+        <p class="footer">The perfect place to practice your debate skills without real consequences!</p>
+    </div>
+
+    <script>
+        let argumentCount = 0;
+        let winStreak = 0;
+        let topicCount = 1;
+        
+        async function sendArgument() {
+            const userArgument = document.getElementById("userInput").value;
+            if (!userArgument.trim()) return;
+
+            const chatBox = document.getElementById("chat");
+            chatBox.innerHTML += `<p><strong>You:</strong> ${userArgument}</p>`;
+            
+            // Update stats
+            argumentCount++;
+            document.getElementById("argumentCount").textContent = argumentCount;
+            
+            // Scroll to bottom of chat
+            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            // Add "typing" indicator
+            const typingIndicator = document.createElement("p");
+            typingIndicator.innerHTML = `<strong>AI Opponent:</strong> <span class="loading">Thinking...</span>`;
+            typingIndicator.id = "typing-indicator";
+            chatBox.appendChild(typingIndicator);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const response = await fetch("/argue", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ argument: userArgument })
+                });
+
+                const data = await response.json();
+                
+                // Remove typing indicator
+                document.getElementById("typing-indicator").remove();
+                
+                // Add response
+                chatBox.innerHTML += `<p><strong>AI Opponent:</strong> ${data.ai_response}</p>`;
+                
+                // Random chance of increasing win streak for demo purposes
+                if (Math.random() > 0.6) {
+                    winStreak++;
+                    document.getElementById("winStreak").textContent = winStreak;
+                }
+            } catch (error) {
+                // Remove typing indicator
+                document.getElementById("typing-indicator").remove();
+                
+                chatBox.innerHTML += `<p><strong>AI Opponent:</strong> Error connecting. Your argument was too powerful for me to handle!</p>`;
+            }
+
+            document.getElementById("userInput").value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function getNewTopic() {
+            const topicElement = document.getElementById("topic");
+            topicElement.textContent = "Loading...";
+            topicElement.classList.add("loading");
+            
+            try {
+                const response = await fetch("/new_topic");
+                const data = await response.json();
+                
+                // Update topic count
+                topicCount++;
+                document.getElementById("topicCount").textContent = topicCount;
+                
+                // Update topic with animation
+                setTimeout(() => {
+                    topicElement.classList.remove("loading");
+                    document.getElementById("topic").textContent = data.new_topic;
+                }, 500);
+                
+                document.getElementById("chat").innerHTML = "<p><strong>AI Opponent:</strong> New topic loaded! Let's see what you've got!</p>";
+            } catch (error) {
+                setTimeout(() => {
+                    topicElement.classList.remove("loading");
+                    document.getElementById("topic").textContent = "Connection error";
+                }, 500);
+                document.getElementById("chat").innerHTML = "<p><strong>AI Opponent:</strong> Couldn't load a new topic. Let's continue with what we have!</p>";
+            }
+        }
+        
+        // Add enter key support
+        document.getElementById("userInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                sendArgument();
+            }
+        });
+        
+        // Initialize with a topic if empty
+        window.addEventListener("DOMContentLoaded", () => {
+            const topic = document.getElementById("topic").textContent;
+            if (topic === "{{ topic }}") {
+                document.getElementById("topic").textContent = "Should pineapple be on pizza?";
+            }
+        });
+    </script>
+
+</body>
+</html>
