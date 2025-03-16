@@ -27,6 +27,13 @@ TOPICS = [
     "Would a duck-sized horse beat 100 horse-sized ducks in a fight?",
     "Was Windows XP the peak of computing?",
     "Is Android actually better than iPhone?"
+    "What came first, the chicken or the egg?"
+    "Should a sandwich be cut diagonally or horizontally?",
+    "Marvel or DC?",
+    "Are we living in a simulation?",
+    "Who's the GOAT: Messi or Ronaldo?",
+    "Who's the GOAT: Michael Jordan or LeBron James?",
+    "Smooth or chunky peanut butter?"
 ]
 
 def get_new_topic():
