@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chess vs. Checkers</title>
+  
+  <!-- jQuery (required by Chessboard.js) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Chessboard.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 30px;
+    }
+    #board {
+      margin: 20px auto;
+      width: 400px;
+    }
+    #controls {
+      margin-bottom: 20px;
+    }
+    button {
+      margin: 5px;
+      padding: 8px 15px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #status {
+      font-weight: bold;
+      margin-top: 15px;
+    }
+    #logArea {
+      display: none;
+      background: #f2f2f2;
+      padding: 1em;
+      margin: 20px auto;
+      white-space: pre-line;
+      max-height: 200px;
+      overflow-y: auto;
+      font-family: monospace;
+      width: 80%;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Chess vs. Checkers</h1>
+<div id="status">Loading engine...</div>
+<div id="board"></div>
+<div id="controls">
+  <button id="resetBtn">Reset Game</button>
+</div>
+<pre id="logArea"></pre>
+
+<!-- Load Stockfish from local or your own path -->
+<script src="js/stockfish.min.js"></script>
+
+<script>
+// ========================= 1) STOCKFISH ENGINE SETUP =========================
+let engine = new Worker('js/stockfish.min.js');  // Adjust path if needed
+let engineReady = false;
+
+// Log utility
+function logMessage(msg) {
+  let logEl = document.getElementById('logArea');
+  logEl.textContent += msg + "\n";
+  logEl.scrollTop = logEl.scrollHeight; // auto scroll
+  console.log(msg);
+}
+
+engine.onmessage = function(e) {
+  let msg = e.data;
+  logMessage("Engine: " + msg);
+
+  if (typeof msg === "string" && msg.indexOf("uciok") !== -1) {
+    engineReady = true;
+    setStatus("Engine ready. Black to move (Checkers).");
+    logMessage("Engine is ready.");
+  }
+};
+
+engine.postMessage("uci"); // Initialize engine
+
+// ========================= 2) INITIAL POSITION & CHESSBOARD =========================
+const initialPosition = {
+  // Black checkers pieces
+  a1: 'bP', c1: 'bP', e1: 'bP', g1: 'bP',
+  b2: 'bP', d2: 'bP', f2: 'bP', h2: 'bP',
+  a3: 'bP', c3: 'bP', e3: 'bP', g3: 'bP',
+
+  // White chess pieces
+  a8: 'wR', b8: 'wN', c8: 'wB', d8: 'wQ',
+  e8: 'wK', f8: 'wB', g8: 'wN', h8: 'wR',
+  a7: 'wP', b7: 'wP', c7: 'wP', d7: 'wP',
+  e7: 'wP', f7: 'wP', g7: 'wP', h7: 'wP'
+};
+
+// We'll track whose turn it is: 'b' or 'w'
+let currentTurn = 'b'; // start with black checkers
+
+// Create the board
+let board = Chessboard('board', {
+  position: initialPosition,
+  pieceTheme: function(piece) {
+    // Custom images for black checkers
+    const pieceImages = {
+      'bP': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgc3Ryb2tlPSJncmF5IiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9ImJsYWNrIi8+PC9zdmc+',
+      'bK': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgc3Ryb2tlPSJncmF5IiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9ImJsYWNrIi8+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iMjAiIGZpbGw9ImdyYXkiLz48L3N2Zz4='
+    };
+    // Default to chess pieces from the Wikipedia set
+    return pieceImages[piece] || `https://chessboardjs.com/img/chesspieces/wikipedia/${piece}.png`;
+  },
+  draggable: true,
+  onDragStart: onDragStart,
+  onDrop: onDrop
+});
+
+// ========================= 3) CHECKERS MOVE VALIDATION =========================
+// (Very minimal single-jump logic, no multi-captures.)
+
+function validateCheckersMove(source, target) {
+  let pos = board.position();
+  let piece = pos[source];
+  if (!piece || !piece.startsWith('b')) return false; // must be black piece
+
+  let dx = target.charCodeAt(0) - source.charCodeAt(0);
+  let dy = parseInt(target[1]) - parseInt(source[1]);
+  let isKing = (piece === 'bK');
+
+  // Basic direction rule: if not king, must move up the board
+  if (!isKing && dy <= 0) return false;
+
+  // Single step or capture
+  let absDx = Math.abs(dx);
+  let absDy = Math.abs(dy);
+
+  // Regular diagonal step
+  if (absDx === 1 && absDy === 1) {
+    // Must land on empty
+    if (pos[target]) return false;
+    return true;
+  }
+
+  // Capture (one piece in between)
+  if (absDx === 2 && absDy === 2) {
+    let midFile = source.charCodeAt(0) + dx/2;
+    let midRank = parseInt(source[1]) + dy/2;
+    let midSquare = String.fromCharCode(midFile) + midRank;
+    let midPiece = pos[midSquare];
+    if (!midPiece) return false; // must capture something
+    if (midPiece.startsWith('b')) return false; // can't capture your own piece
+    if (pos[target]) return false; // target must be empty
+    return true;
+  }
+
+  return false;
+}
+
+// Apply the black checkers move to the board
+function applyCheckersMove(source, target) {
+  let pos = board.position();
+  let piece = pos[source];
+  let dx = target.charCodeAt(0) - source.charCodeAt(0);
+  let dy = parseInt(target[1]) - parseInt(source[1]);
+  let absDx = Math.abs(dx);
+  let absDy = Math.abs(dy);
+
+  // Capture
+  if (absDx === 2 && absDy === 2) {
+    let midFile = source.charCodeAt(0) + dx/2;
+    let midRank = parseInt(source[1]) + dy/2;
+    let midSquare = String.fromCharCode(midFile) + midRank;
+    delete pos[midSquare]; // remove the captured piece
+  }
+
+  // Move piece
+  pos[target] = piece;
+  delete pos[source];
+
+  // If it reaches top row and is not already a king, promote to 'bK'
+  if (piece === 'bP' && target[1] === '8') {
+    pos[target] = 'bK';
+  }
+
+  board.position(pos);
+  checkWinConditions();
+}
+
+// ========================= 4) TURN HANDLING =========================
+
+function onDragStart(source, piece, position, orientation) {
+  // Only allow dragging black pieces if it's black's turn
+  if (currentTurn !== 'b' || !piece.startsWith('b')) {
+    return false;
+  }
+}
+
+function onDrop(source, target) {
+  // If user dropped outside the board or same square, snapback
+  if (target === 'offboard' || target === source) {
+    return 'snapback';
+  }
+
+  // Validate checkers move
+  if (!validateCheckersMove(source, target)) {
+    return 'snapback';
+  }
+
+  // Apply the checkers move
+  applyCheckersMove(source, target);
+
+  // Switch to White's turn, automatically let Stockfish move
+  currentTurn = 'w';
+  setStatus("AI (White) is thinking...");
+  setTimeout(aiMove, 200);  // small delay for clarity
+}
+
+// ========================= 5) AI (WHITE) MOVE LOGIC =========================
+
+async function aiMove() {
+  // Force the engine to produce a move or fallback
+  let moveStr = await getEngineOrRandomMove();
+  logMessage("AI chose: " + moveStr);
+
+  if (moveStr.length >= 4) {
+    applyWhiteMove(moveStr);
+  }
+
+  // Switch turn back to black
+  currentTurn = 'b';
+  setStatus("Your move (Black).");
+}
+
+// Convert the hybrid board to a "safe" FEN
+function convertToChessFEN() {
+  let pos = board.position();
+  let fen = '';
+  let whiteKingFound = false;
+
+  for (let rank = 8; rank >= 1; rank--) {
+    let empty = 0;
+    let rowFen = '';
+    for (let file = 0; file < 8; file++) {
+      let sq = String.fromCharCode(97+file) + rank;
+      let piece = pos[sq];
+      if (!piece) {
+        empty++;
+        continue;
+      }
+      if (empty > 0) {
+        rowFen += empty;
+        empty = 0;
+      }
+      if (piece.startsWith('w')) {
+        let letter = piece[1].toUpperCase(); // e.g. 'K'
+        rowFen += letter;
+        if (letter === 'K') whiteKingFound = true;
+      } else {
+        // black checkers as pawns or queens
+        if (piece === 'bK') rowFen += 'q';
+        else rowFen += 'p';
+      }
+    }
+    if (empty > 0) rowFen += empty;
+    fen += rowFen + (rank>1 ? '/' : '');
+  }
+
+  // Ensure there's a white king
+  if (!whiteKingFound) {
+    fen = fen.replace(/8$/, '7K'); 
+  }
+
+  // White to move in the FEN
+  fen += " w - - 0 1";
+  return fen;
+}
+
+// Ask Stockfish for a move, or fallback to random
+async function getEngineOrRandomMove() {
+  return new Promise((resolve) => {
+    let fen = convertToChessFEN();
+    logMessage("Sending FEN: " + fen);
+
+    let gotBest = false;
+    const onMessage = (e) => {
+      let msg = e.data;
+      if (typeof msg === "string" && msg.startsWith("bestmove")) {
+        gotBest = true;
+        engine.removeEventListener('message', onMessage);
+
+        let parts = msg.split(" ");
+        let bestmove = parts[1];
+        if (!bestmove || bestmove === '(none)') {
+          logMessage("Engine gave (none). Fallback random.");
+          bestmove = generateRandomWhiteMove();
+        }
+        resolve(bestmove);
+      }
+    };
+    engine.addEventListener('message', onMessage);
+
+    // Send engine commands
+    engine.postMessage('ucinewgame');
+    engine.postMessage('isready');
+    engine.postMessage('setoption name Use NNUE value false');
+    engine.postMessage(`position fen ${fen}`);
+    engine.postMessage('go depth 4 movetime 1000');
+
+    // Fallback timeout
+    setTimeout(() => {
+      if (!gotBest) {
+        engine.removeEventListener('message', onMessage);
+        logMessage("Engine timed out. Using random move fallback.");
+        let random = generateRandomWhiteMove();
+        resolve(random);
+      }
+    }, 3000);
+  });
+}
+
+// Minimal random White move generator if Stockfish fails
+function generateRandomWhiteMove() {
+  let pos = board.position();
+  let whiteSquares = Object.keys(pos).filter(s => pos[s].startsWith('w'));
+  if (whiteSquares.length === 0) return '0000';
+
+  let from = whiteSquares[Math.floor(Math.random() * whiteSquares.length)];
+  let file = String.fromCharCode(97 + Math.floor(Math.random() * 8));
+  let rank = (1 + Math.floor(Math.random() * 8));
+  let to = file + rank;
+  return from + to;
+}
+
+// Apply White's move to the board
+function applyWhiteMove(moveStr) {
+  let pos = board.position();
+  if (moveStr.length < 4) return;
+
+  let from = moveStr.slice(0,2);
+  let to   = moveStr.slice(2,4);
+
+  // If no piece at 'from', do nothing
+  if (!pos[from]) return;
+
+  // Capture black if present
+  if (pos[to] && pos[to].startsWith('b')) {
+    delete pos[to];
+  }
+
+  // Move the piece
+  pos[to] = pos[from];
+  delete pos[from];
+
+  // Promotion?
+  if (moveStr.length > 4 && pos[to] === 'wP') {
+    let promo = moveStr[4].toUpperCase(); // e.g. Q
+    pos[to] = 'w' + promo;
+  }
+
+  board.position(pos);
+  checkWinConditions();
+}
+
+// ========================= 6) WIN CONDITIONS =========================
+function checkWinConditions() {
+  let pos = board.position();
+  let whiteKingExists = false;
+  let anyBlackExists = false;
+
+  for (let sq in pos) {
+    if (pos[sq] === 'wK') whiteKingExists = true;
+    if (pos[sq].startsWith('b')) anyBlackExists = true;
+  }
+
+  if (!whiteKingExists) {
+    setStatus("Black wins! (White king captured)");
+    logMessage("Game Over: Black wins!");
+    currentTurn = 'disabled';
+  } else if (!anyBlackExists) {
+    setStatus("White wins! (No black pieces left)");
+    logMessage("Game Over: White wins!");
+    currentTurn = 'disabled';
+  }
+}
+
+// ========================= 7) RESET AND STATUS =========================
+document.getElementById('resetBtn').addEventListener('click', () => {
+  board.position(initialPosition, false);
+  currentTurn = 'b';
+  document.getElementById('logArea').textContent = "";
+  setStatus("Game reset. Black to move (Checkers).");
+});
+
+// Helper
+function setStatus(msg) {
+  document.getElementById('status').textContent = msg;
+}
+
+// Initialize
+setStatus("Loading engine...");
+board.position(initialPosition);
+</script>
+
+</body>
+</html>
