@@ -9,31 +9,21 @@
 <body>
     <div class="container">
         <header>
-            <h1>Bottom Text Party Pack</h1>
+            <h1>The Bottom Text Party Pack</h1>
             <h2>Morse Code Battle</h2>
         </header>
         <main>
-            <p class="instructions">Press <span class="key">SPACE</span> to play and <span class="key">ESC</span> to stop!</p>
-            <div class="checkbox">
+            <p class="instructions">
+                Press <span class="key">SPACE</span> to play!<br>
+            </p>
+            <p class="info">Your Morse code input needs to contain the word appearing on screen.</p>
+            <button onclick="showCheatsheet()" class="cheatsheet-btn">Cheatsheet</button>
+            <div class="checkbox" style="display: none;">
                 <input type="checkbox" name="music" id="music" checked>Play Music
             </div>
-            <section class="svg-wrapper">
-                <svg width="500" height="100">
-                    <defs>
-                        <filter id="filter" height="1.4" width="1.4">
-                            <feTurbulence baseFrequency="0.08" numOctaves="3" type="fractalNoise" result="result1" />
-                            <feDisplacementMap in2="result1" scale="75" result="result2" xChannelSelector="R" in="SourceGraphic" />
-                            <feComposite in2="result2" in="SourceGraphic" operator="atop" result="fbSourceGraphic" />
-                        </filter>
-                    </defs>
-                    <rect fill="#fff" filter="url(#filter)" width="500" height="100" x="0" y="0" />
-                    <foreignObject width="500" height="100">
-                        <div class="dictate">
-                            <span id="text-dictate">Waiting...</span>
-                        </div>
-                    </foreignObject>
-                </svg>
-            </section>
+            <div class="dictate">
+                <span id="text-dictate">Waiting...</span>
+            </div>
             <canvas id="morse-canvas"></canvas>
             <div class="morse-written">
                 <span id="morse-written"></span>
@@ -42,6 +32,42 @@
                 <span id="morse-decoded"></span>
             </div>
         </main>
+        <div id="cheatsheet" class="cheatsheet" style="display:none;">
+            <div class="cheatsheet-container">
+                <span class="close" onclick="showCheatsheet()">&#10005;</span>
+                <h2>Morse code Cheatsheet</h2>
+                <div class="morse-codes-list">
+                    <div class="letter"><span>A</span><span>.-</span></div>
+                    <div class="letter"><span>B</span><span>-...</span></div>
+                    <div class="letter"><span>C</span><span>-.-.</span></div>
+                    <div class="letter"><span>D</span><span>-..</span></div>
+                    <div class="letter"><span>E</span><span>.</span></div>
+                    <div class="letter"><span>F</span><span>..-.</span></div>
+                    <div class="letter"><span>G</span><span>--.</span></div>
+                    <div class="letter"><span>H</span><span>....</span></div>
+                    <div class="letter"><span>I</span><span>..</span></div>
+                    <div class="letter"><span>J</span><span>.---</span></div>
+                    <div class="letter"><span>K</span><span>-.-</span></div>
+                    <div class="letter"><span>L</span><span>.-..</span></div>
+                    <div class="letter"><span>M</span><span>--</span></div>
+                    <div class="letter"><span>N</span><span>-.</span></div>
+                    <div class="letter"><span>O</span><span>---</span></div>
+                    <div class="letter"><span>P</span><span>.--.</span></div>
+                    <div class="letter"><span>Q</span><span>--.-</span></div>
+                    <div class="letter"><span>R</span><span>.-.</span></div>
+                    <div class="letter"><span>S</span><span>...</span></div>
+                    <div class="letter"><span>T</span><span>-</span></div>
+                    <div class="letter"><span>U</span><span>..-</span></div>
+                    <div class="letter"><span>V</span><span>...-</span></div>
+                    <div class="letter"><span>W</span><span>.--</span></div>
+                    <div class="letter"><span>X</span><span>-..-</span></div>
+                    <div class="letter"><span>Y</span><span>-.--</span></div>
+                    <div class="letter"><span>Z</span><span>--..</span></div>
+
+
+                </div>
+            </div>
+        </div>
     </div>
     <script src="../static/morse.js"></script>
 </body>

@@ -7,7 +7,17 @@ let words = [
     "laptop","food","pizza","phone","chair","table","ship",
     "ocean","sos","help","radio","antenna","air","time",
     "gold","navigate","guide","tree","binary","no","water",
-    "receive","minerals","rocks","clothes","flower","sleep"
+    "receive","minerals","rocks","clothes","flower","sleep",
+    "communism","cable","internet","wifi","router","modem",
+    "server","client","host","network","cloud","data","big",
+    "small","large","medium","gigabyte","terabyte","petabyte",
+    "tissue","paper","pen","pencil","eraser","rubber","lead",
+    "ink","printer","scanner","keyboard","mouse","monitor",
+    "key","lock","door","window","glass","wood","metal","iron",
+    "copper","silver","gold","platinum","diamond","emerald",
+    "ruby","sapphire","topaz","quartz","crystal","glass","wood",
+    "metal","iron","copper","silver","gold","platinum","diamond",
+    "airplane","helicopter","jet","rocket","space","mars","earth"
 ]
 
 let raw_morse = document.getElementById("morse-written");
@@ -83,7 +93,7 @@ function decodeMorse(morseCode) {
 function getRandomWords(arr) {
     const copy = arr.slice();
     const result = [];
-    for (let i = 0; i < 10 && copy.length; i++) {
+    for (let i = 0; i < 5 && copy.length; i++) {
         const index = Math.floor(Math.random() * copy.length);
         result.push(copy.splice(index, 1)[0]);
     }
@@ -99,6 +109,7 @@ let game_begin = false
 let music_playing = false;
 let checkbox = document.getElementById('music');
 const music = new Audio("../static/assets/morse-code-bg.mp3");
+const success = new Audio("../static/assets/success.mp3")
 
 let text_space = document.getElementById('text-dictate');
 
@@ -284,7 +295,8 @@ function checkWordCompletion() {
     
     if (decodedText.toLowerCase().includes(currentWord)) {
         console.log("Word completed:", currentWord);
-        
+        success.volume = 0.9;
+        success.play();
         // Move to next word
         currentWordIndex++;
         raw_morse_txt = "";
@@ -296,7 +308,8 @@ function checkWordCompletion() {
             gameEndTime = Date.now();
             const timeInSeconds = ((gameEndTime - gameStartTime) / 1000).toFixed(2);
             
-            text_space.innerHTML = `You won in ${timeInSeconds}s! Restart to play again.`;
+            text_space.innerHTML = `You won in ${timeInSeconds} SECONDS! Refresh to play again.`;
+            text_space.style.textAlign = "center";
             
             // Stop the game
             gameLoop = false;
@@ -309,6 +322,8 @@ function checkWordCompletion() {
         } else {
             // Show next word
             text_space.innerHTML = selectedWords[currentWordIndex];
+            raw_morse.innerHTML = "";
+            decoded_morse.innerHTML = "";
         }
     }
 }
@@ -333,6 +348,7 @@ document.addEventListener('keyup', (event) => {
         // Check if the current word is completed
         if (game_begin && currentWordIndex < selectedWords.length) {
             checkWordCompletion();
+
         }
 
         oscillator.stop();
@@ -345,3 +361,14 @@ document.addEventListener('keyup', (event) => {
 
     }
 });
+
+function showCheatsheet(){
+    const cheatsheet = document.getElementById('cheatsheet');
+    if (cheatsheet.style.display == "none") {
+        console.log("yup, changing to grid.")
+        cheatsheet.style.display = "grid";
+    } else {
+        console.log("bye")
+        cheatsheet.style.display = "none";
+    }
+}
