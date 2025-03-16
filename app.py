@@ -51,8 +51,7 @@ def morse_battle():
 
 @app.route('/chess-vs-checkers')
 def chess_vs_checkers():
-    # return render_template('chess-vs-checkers.html')
-    return "work in progress, it's ready just not published"
+    return render_template('chess-vs-checkers.html')
 
 @app.route('/pizzeria')
 def pizzeria():
