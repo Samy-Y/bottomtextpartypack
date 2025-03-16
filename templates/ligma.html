@@ -249,6 +249,27 @@
             <div class="format-button useful" onclick="downloadPizza('png')">PNG</div>
         </div>
     </div>
+
+    <button onclick="showDominosOrderForm()">Place Order</button>
+
+    <div id="dominosOrder" style="display: none;">
+        <h3>Complete Your Order with Domino's Morocco</h3>
+        <form id="dominosForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+    
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required><br><br>
+    
+            <label for="address">Delivery Address:</label>
+            <input type="text" id="address" name="address" required><br><br>
+    
+            <label for="pizzaDetails">Pizza Details:</label>
+            <textarea id="pizzaDetails" name="pizzaDetails" readonly></textarea><br><br>
+    
+            <button type="button" onclick="redirectToDominos()">Place Order on Domino's Website</button>
+        </form>
+    </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
@@ -260,7 +281,7 @@
             const base = document.getElementById('base').value;
             const baseImage = document.getElementById('baseImage');
             if (base) {
-                baseImage.src = `../assets/ligma/base/${base}.png`;
+                baseImage.src = `../static/assets/ligma/base/${base}.png`;
                 baseImage.style.display = 'block';
                 document.getElementById('sauceSelection').style.display = 'block';
             } else {
@@ -276,7 +297,7 @@
             const sauce = document.getElementById('sauce').value;
             const sauceImage = document.getElementById('sauceImage');
             if (sauce) {
-                sauceImage.src = `../assets/ligma/sauce/${sauce}.png`;
+                sauceImage.src = `../static/assets/ligma/sauce/${sauce}.png`;
                 sauceImage.style.display = 'block';
                 document.getElementById('toppingsSelection').style.display = 'block';
             } else {
@@ -297,7 +318,7 @@
             
             toppings.forEach(topping => {
                 const img = document.createElement('img');
-                img.src = `../assets/ligma/toppings/${topping}.png`;
+                img.src = `../static/assets/ligma/toppings/${topping}.png`;
                 img.alt = topping;
                 img.className = 'pizza-image';
                 toppingsImagesDiv.appendChild(img);
@@ -542,7 +563,7 @@
         });
     };
 
-    loadImage('../assets/ligma/pdf/logo.png').then((titleImage) => {
+    loadImage('../static/assets/ligma/pdf/logo.png').then((titleImage) => {
         const imgWidth = 150;
         const imgHeight = (titleImage.height * imgWidth) / titleImage.width;
         const x = (pdf.internal.pageSize.width - imgWidth) / 2;
@@ -756,6 +777,29 @@
                 document.body.style.cursor = 'default';
                 downloadBtn.textContent = originalText;
             });
+        }
+
+        function showDominosOrderForm() {
+            const base = document.getElementById('base').value;
+            const sauce = document.getElementById('sauce').value;
+            const toppings = Array.from(document.querySelectorAll('#toppings input:checked'))
+                .map(input => input.value).join(', ') || 'None';
+
+            const pizzaDetails = `Base: ${base}, Sauce: ${sauce}, Toppings: ${toppings}`;
+            document.getElementById('pizzaDetails').value = pizzaDetails;
+
+            document.getElementById('dominosOrder').style.display = 'block';
+        }
+
+        function redirectToDominos() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            const pizzaDetails = document.getElementById('pizzaDetails').value;
+
+            const dominosUrl = `https://www.dominos.ma/order`;
+            alert(`Redirecting to Domino's Morocco to complete your order.`);
+            window.location.href = dominosUrl;
         }
     </script>
 </body>
