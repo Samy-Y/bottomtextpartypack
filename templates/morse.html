@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morse Code Battle</title>
+    <link rel="stylesheet" href="../static/morse.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bottom Text Party Pack</h1>
+            <h2>Morse Code Battle</h2>
+        </header>
+        <main>
+            <p class="instructions">Press <span class="key">SPACE</span> to play and <span class="key">ESC</span> to stop!</p>
+            <div class="checkbox">
+                <input type="checkbox" name="music" id="music" checked>Play Music
+            </div>
+            <section class="svg-wrapper">
+                <svg width="500" height="100">
+                    <defs>
+                        <filter id="filter" height="1.4" width="1.4">
+                            <feTurbulence baseFrequency="0.08" numOctaves="3" type="fractalNoise" result="result1" />
+                            <feDisplacementMap in2="result1" scale="75" result="result2" xChannelSelector="R" in="SourceGraphic" />
+                            <feComposite in2="result2" in="SourceGraphic" operator="atop" result="fbSourceGraphic" />
+                        </filter>
+                    </defs>
+                    <rect fill="#fff" filter="url(#filter)" width="500" height="100" x="0" y="0" />
+                    <foreignObject width="500" height="100">
+                        <div class="dictate">
+                            <span id="text-dictate">Waiting...</span>
+                        </div>
+                    </foreignObject>
+                </svg>
+            </section>
+            <canvas id="morse-canvas"></canvas>
+            <div class="morse-written">
+                <span id="morse-written"></span>
+            </div>
+            <div class="morse-decoded">
+                <span id="morse-decoded"></span>
+            </div>
+        </main>
+    </div>
+    <script src="../static/morse.js"></script>
+</body>
+</html>

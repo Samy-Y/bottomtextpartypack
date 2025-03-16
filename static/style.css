@@ -6,10 +6,33 @@
 
 body {
     margin: 0;
+    background-image: url('https://texturelabs.org/wp-content/uploads/Texturelabs_Wood_189S.jpg');
+    background-size: cover;
+    backdrop-filter: blur(5px);
 }
 
 h1 {
+    font-size: 8vh;
     text-align: center;
+}
+
+main {
+    background-color: #f0f0f0;
+    width:55%;
+    margin:auto;
+    height: 100vh;
+    padding:3vh;
+    margin-top:0;
+    box-shadow: 0px 0px 100px #00000038;
+}
+
+h1::after {
+    content: "";
+    display: block;
+    height:10px;
+    margin: auto;
+    width: 90%;
+    border-bottom: 1px solid black;
 }
 
 .sel {
@@ -24,6 +47,20 @@ h1 {
     animation: blinking;
     animation-duration: 0.75s;
     animation-iteration-count: infinite;
+}
+
+.splash {
+    font-family: monospace;
+    color:yellow;
+    text-shadow:1px 1px black,
+    -1px -1px black, 
+    0px 2px black, 
+    2px 0px black,
+    -2px 0px black,
+    0px -2px black;
+    text-align: center;
+    margin-top:-20px; /* terrible code */
+    font-size: larger;
 }
 
 @keyframes blinking {

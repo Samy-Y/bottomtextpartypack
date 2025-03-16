@@ -8,22 +8,21 @@
     <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-    <header>
-        <h1>The Bottom Text Party Pack.</h1>
-        <p class="sel">Select a game to start playing!</p>
-    </header>
     <main>
+        <h1>The Bottom Text Party Pack.</h1>
+        <p class="splash">ChatGPT-free code!</p>
+        <p class="sel">Select a game to start playing!</p>
         <section>
-            <a href="">
+            <a href="{{url_for('chess_vs_checkers')}}">
                 <div class="game-icon" style="background-image:url('../static/assets/chess\ vs\ checkers.png') ; background-size: contain;"><p>Chess vs Checkers</p></div>
             </a>
-            <a href="">
+            <a href="{{url_for('morse_battle')}}">
                 <div class="game-icon" style="background-image:url('../static/assets/morse\ code\ icon.png') ; background-size: contain;"><p>Morse Code Battle</p></div>
             </a>
-            <a href="">
+            <a href="{{url_for('pizzeria')}}">
                 <div class="game-icon" style="background-image:url('../static/assets/ligma\ pizza\ icon.png') ; background-size: contain;"><p>Universe Pizzeria</p></div>
             </a>
-            <a href="">
+            <a href="{{url_for('argument')}}">
                 <div class="game-icon" style="background-image:url('../static/assets/internet\ argument\ simulator.png') ; background-size: contain;"><p>Internet Argument Simulator</p></div>
             </a>
         </section>

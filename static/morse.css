@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Gabarito&display=swap');
+
+* {
+    box-sizing: border-box;
+    font-family: 'Gabarito', sans-serif;
+}
+
+body {
+    margin: 0;
+    background: linear-gradient(#d9e2ec, #dfdfdf);
+    color: #333;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+header h2 {
+    margin: 0.5rem 0 1rem;
+    font-size: 1.8rem;
+    font-weight: normal;
+}
+
+.instructions {
+    text-align: center;
+    background: linear-gradient(135deg, #d38124, #a76419);
+    color: white;
+    width: 80%;
+    margin: 1rem auto;
+    padding: 1rem;
+    border-radius: 1rem;
+    transition: transform 0.1s ease-in-out;
+}
+
+.instructions:hover {
+    transform: scale(1.05);
+}
+
+.key {
+    background-color: #aaa;
+    border-radius: 0.5rem;
+    padding: 0.2rem 0.5rem;
+    box-shadow: 2px 2px #333;
+    transition: box-shadow 0.1s ease-in-out;
+}
+
+.key:hover {
+    box-shadow: inset 2px 2px #333;
+}
+
+.checkbox {
+    text-align: center;
+    margin: 1rem 0;
+}
+
+svg {
+    display:block;
+    margin: auto;
+}
+
+.dictate {
+    display:grid;
+    height:100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.dictate span {
+    font-family: monospace;
+    font-size: 6vh;
+}
+
+/* Keep existing SVG styling intact */
+svg {
+    width: 500px;
+    height: 100px;
+}
+
+canvas#morse-canvas {
+    display: block;
+    margin: 1rem auto;
+    background: #fff;
+    width: 90%;
+    height: 100px;
+    border-radius: 0.5rem;
+}
+
+/* Hide audio element if added later */
+audio {
+    display: none;
+}
