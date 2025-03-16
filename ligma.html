@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universe Pizzeria</title>
+    <link rel="stylesheet" href="https://css.hackclub.com/theme.css">
+    <link rel="stylesheet" href="https://css.hackclub.com/fonts.css">
+    <style>
+        body {
+            font-family: 'Phantom Sans', Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: #ec3750;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        @media (min-width: 768px) {
+            .main-container {
+                flex-direction: row;
+                justify-content: center;
+                align-items: flex-start;
+                gap: 40px;
+            }
+        }
+        
+        .pizza-form {
+            background-color: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .pizza-form label {
+            display: block;
+            margin: 12px 0 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .pizza-form select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .pizza-form select:focus {
+            border-color: #33d6a6;
+            outline: none;
+        }
+        
+        .pizza-container {
+            margin: 20px 0;
+            position: relative;
+            width: 350px;
+            height: 350px;
+            display: inline-block;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+        
+        .pizza-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .topping-checkbox {
+            display: block;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        
+        .topping-checkbox input {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+        
+        button {
+            padding: 12px 24px;
+            background-color: #33d6a6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        button:hover {
+            background-color: #2bc296;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .format-selection {
+            margin-top: 20px;
+            display: none;
+            background-color: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .format-selection h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: #555;
+        }
+        
+        .format-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 8px;
+        }
+        
+        .format-button {
+            padding: 8px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .format-button:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .format-button.useful {
+            background-color: #33d6a6;
+            color: white;
+            border-color: #2bc296;
+        }
+        
+        .format-button.useful:hover {
+            background-color: #2bc296;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍕 UNIVERSE PIZZERIA 🍕</h1>
+    
+    <div class="main-container">
+        <div class="pizza-form" id="pizzaForm">
+            <label for="base">Choose your base:</label>
+            <select id="base" name="base" onchange="selectBase()">
+                <option value="">Select Base</option>
+                <option value="base">Regular</option>
+                <option value="gold base">Gold</option>
+                <option value="uranium pizza">Enriched Uranium-235</option>
+                <option value="concrete">Concrete</option>
+                <option value="grass base">Grass</option>
+                <option value="jean base">Jean Cloth</option>
+                <option value="PVC pizza">PVC</option>
+                <option value="aluminium base">Aluminium</option>
+            </select>
+            
+            <div id="sauceSelection" style="display: none;">
+                <label for="sauce">Choose your sauce:</label>
+                <select id="sauce" name="sauce" onchange="selectSauce()">
+                    <option value="">Select Sauce</option>
+                    <option value="tomato">Tomato</option>
+                    // Add footer
+                    <option value="pesto">Pesto</option>
+                    <option value="cement">Cement</option>
+                    <option value="mc_water">Minecraft Water</option>
+                    <option value="lava">Lava</option>
+                    <option value="ink">Ink</option>
+                    <option value="mercury">Mercury</option>
+                    <option value="ferromagnetic_fluid">Ferromagnetic Fluid</option>
+                    <option value="hair">Hair</option>
+                </select>
+            </div>
+            
+            <div id="toppingsSelection" style="display: none;">
+                <label for="toppings">Choose your toppings:</label>
+                <div id="toppings">
+                    <label class="topping-checkbox"><input type="checkbox" value="pepperoni" onchange="selectToppings()"> Pepperoni</label>
+                    <label class="topping-checkbox"><input type="checkbox" value="fromaggio" onchange="selectToppings()"> Fromaggio</label>
+                    <label class="topping-checkbox"><input type="checkbox" value="coins" onchange="selectToppings()"> Coins</label>
+                    <label class="topping-checkbox"><input type="checkbox" value="honey" onchange="selectToppings()"> Honey</label>
+                    <label class="topping-checkbox"><input type="checkbox" value="keys" onchange="selectToppings()"> Keys</label>
+                    <label class="topping-checkbox"><input type="checkbox" value="paper" onchange="selectToppings()"> Paper</label>
+                    <label class="topping-checkbox"><input type="checkbox" value="screws" onchange="selectToppings()"> Screws</label>
+                </div>
+            </div>
+            
+            <button onclick="showFormatOptions()">Download Pizza</button>
+        </div>
+        
+        <div id="pizzaDisplay" class="pizza-container">
+            <img id="baseImage" src="" alt="Base" class="pizza-image" style="display: none;">
+            <img id="sauceImage" src="" alt="Sauce" class="pizza-image" style="display: none;">
+            <div id="toppingsImages"></div>
+        </div>
+    </div>
+    
+    <div id="formatSelection" class="format-selection">
+        <h3>Choose Download Format</h3>
+        <div class="format-buttons">
+            <div class="format-button useful" onclick="downloadPizza('bmp')">BMP</div>
+            <div class="format-button useful" onclick="downloadPizza('tiff')">TIFF</div>
+            <div class="format-button useful" onclick="downloadPizza('pcx')">PCX</div>
+            <div class="format-button useful" onclick="downloadPizza('webp')">WEBP</div>
+            <div class="format-button useful" onclick="downloadPizza('pdf')">PDF</div>
+            <div class="format-button useful" onclick="downloadPizza('raw')">RAW</div>
+            <div class="format-button useful" onclick="downloadPizza('ppt')">PPT</div>
+            <div class="format-button useful" onclick="downloadPizza('xlsx')">EXCEL</div>
+            <div class="format-button useful" onclick="downloadPizza('tga')">TGA</div>
+            <div class="format-button useful" onclick="downloadPizza('emf')">EMF</div>
+            <div class="format-button useful" onclick="downloadPizza('jpg')">JPG</div>
+            <div class="format-button useful" onclick="downloadPizza('png')">PNG</div>
+        </div>
+    </div>
+
+    <button onclick="showDominosOrderForm()">Place Order</button>
+
+    <div id="dominosOrder" style="display: none;">
+        <h3>Complete Your Order with Domino's Morocco</h3>
+        <form id="dominosForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+    
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required><br><br>
+    
+            <label for="address">Delivery Address:</label>
+            <input type="text" id="address" name="address" required><br><br>
+    
+            <label for="pizzaDetails">Pizza Details:</label>
+            <textarea id="pizzaDetails" name="pizzaDetails" readonly></textarea><br><br>
+    
+            <button type="button" onclick="redirectToDominos()">Place Order on Domino's Website</button>
+        </form>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.11.0/pptxgen.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        function selectBase() {
+            const base = document.getElementById('base').value;
+            const baseImage = document.getElementById('baseImage');
+            if (base) {
+                baseImage.src = `../static/assets/ligma/base/${base}.png`;
+                baseImage.style.display = 'block';
+                document.getElementById('sauceSelection').style.display = 'block';
+            } else {
+                baseImage.style.display = 'none';
+                document.getElementById('sauceSelection').style.display = 'none';
+                document.getElementById('sauce').value = '';
+                document.getElementById('toppingsSelection').style.display = 'none';
+                selectSauce();
+            }
+        }
+
+        function selectSauce() {
+            const sauce = document.getElementById('sauce').value;
+            const sauceImage = document.getElementById('sauceImage');
+            if (sauce) {
+                sauceImage.src = `../static/assets/ligma/sauce/${sauce}.png`;
+                sauceImage.style.display = 'block';
+                document.getElementById('toppingsSelection').style.display = 'block';
+            } else {
+                sauceImage.style.display = 'none';
+                document.getElementById('toppingsSelection').style.display = 'none';
+                document.getElementById('toppingsImages').innerHTML = '';
+                const checkboxes = document.querySelectorAll('#toppings input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+            }
+        }
+
+        function selectToppings() {
+            const toppings = Array.from(document.querySelectorAll('#toppings input:checked')).map(input => input.value);
+            const toppingsImagesDiv = document.getElementById('toppingsImages');
+            toppingsImagesDiv.innerHTML = '';
+            
+            toppings.forEach(topping => {
+                const img = document.createElement('img');
+                img.src = `../static/assets/ligma/toppings/${topping}.png`;
+                img.alt = topping;
+                img.className = 'pizza-image';
+                toppingsImagesDiv.appendChild(img);
+            });
+        }
+        
+        function showFormatOptions() {
+            if (document.getElementById('baseImage').style.display === 'none') {
+                alert('Please select a pizza base before downloading');
+                return;
+            }
+            
+            const formatSelection = document.getElementById('formatSelection');
+            formatSelection.style.display = 'block';
+            
+            formatSelection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function canvasToRaw(canvas) {
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const pixelData = imageData.data;
+            
+            const rawData = new Uint8Array(canvas.width * canvas.height * 3);
+            
+            let rawIndex = 0;
+            for (let i = 0; i < pixelData.length; i += 4) {
+                rawData[rawIndex++] = pixelData[i];     // R
+                rawData[rawIndex++] = pixelData[i + 1]; // G
+                rawData[rawIndex++] = pixelData[i + 2]; // B
+            }
+            
+            return rawData;
+        }
+
+        function canvasToTGA(canvas) {
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+        
+            const header = new Uint8Array([
+                0,
+                0,
+                2,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 0,
+                canvas.width & 0xFF, (canvas.width >> 8) & 0xFF,
+                canvas.height & 0xFF, (canvas.height >> 8) & 0xFF,
+                24,
+                0
+            ]);
+            
+            const pixelData = new Uint8Array(canvas.width * canvas.height * 3);
+            let j = 0;
+            for (let i = 0; i < data.length; i += 4) {
+                pixelData[j++] = data[i + 2];
+                pixelData[j++] = data[i + 1];
+                pixelData[j++] = data[i];
+            }
+            
+            const tgaData = new Uint8Array(header.length + pixelData.length);
+            tgaData.set(header);
+            tgaData.set(pixelData, header.length);
+            
+            return tgaData;
+        }
+
+        function createExcel(canvas) {
+            const workbook = XLSX.utils.book_new();
+            const worksheet = XLSX.utils.aoa_to_sheet([
+                ['Universe Pizzeria - Pizza Details'],
+                ['Generated Date', new Date().toLocaleString()],
+                ['Image Size', `${canvas.width}x${canvas.height}`],
+                ['Base', document.getElementById('base').value],
+                ['Sauce', document.getElementById('sauce').value],
+                ['Toppings', Array.from(document.querySelectorAll('#toppings input:checked'))
+                    .map(input => input.value).join(', ')]
+            ]);
+            
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Pizza Details');
+            return XLSX.write(workbook, {bookType: 'xlsx', type: 'array'});
+        }
+
+        function createPowerPoint(canvas) {
+            const pptx = new PptxGenJS();
+            const slide = pptx.addSlide();
+            
+            slide.addText('Universe Pizzeria', {
+                x: 1,
+                y: 0.5,
+                w: '80%',
+                fontSize: 24,
+                color: 'EC3750',
+                bold: true,
+                align: 'center'
+            });
+            
+            const imageData = canvas.toDataURL('image/png').split(',')[1];
+            slide.addImage({
+                data: imageData,
+                x: 1,
+                y: 1.5,
+                w: 8,
+                h: 6
+            });
+            
+            return pptx;
+        }
+
+        function canvasToBMP(canvas) {
+            const w = canvas.width;
+            const h = canvas.height;
+            const imageData = canvas.getContext('2d').getImageData(0, 0, w, h);
+            const pixels = imageData.data;
+            
+            const headerSize = 54;
+            const bmpSize = headerSize + w * h * 4;
+            const header = new Uint8Array([
+                0x42, 0x4D,
+                bmpSize & 255,
+                (bmpSize >> 8) & 255,
+                (bmpSize >> 16) & 255,
+                (bmpSize >> 24) & 255,
+                0, 0, 0, 0,
+                54, 0, 0, 0,
+                40, 0, 0, 0,
+                w & 255,
+                (w >> 8) & 255,
+                (w >> 16) & 255,
+                (w >> 24) & 255,
+                h & 255,
+                (h >> 8) & 255,
+                (h >> 16) & 255,
+                (h >> 24) & 255,
+                1, 0,
+                32, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 0
+            ]);
+
+            const data = new Uint8Array(bmpSize);
+            data.set(header);
+            
+            let offset = headerSize;
+            for (let y = h - 1; y >= 0; y--) {
+                for (let x = 0; x < w; x++) {
+                    const i = (y * w + x) * 4;
+                    data[offset++] = pixels[i + 2]; // B
+                    data[offset++] = pixels[i + 1]; // G
+                    data[offset++] = pixels[i];     // R
+                    data[offset++] = pixels[i + 3]; // A
+                }
+            }
+            
+            return data;
+        }
+
+        function canvasToPCX(canvas) {
+            const w = canvas.width;
+            const h = canvas.height;
+            const imageData = canvas.getContext('2d').getImageData(0, 0, w, h);
+            const pixels = imageData.data;
+            
+            const header = new Uint8Array([
+                0x0A,
+                0x05,
+                0x01,
+                0x08,
+                0x00, 0x00,
+                0x00, 0x00,
+                (w-1) & 0xFF,
+                ((w-1) >> 8) & 0xFF,
+                (h-1) & 0xFF,
+                ((h-1) >> 8) & 0xFF,
+                0x00, 0x00,
+                0x00, 0x00,
+                ...new Array(48).fill(0),
+                0x00,
+                0x01,
+                w & 0xFF,
+                (w >> 8) & 0xFF,
+                0x01, 0x00,
+                ...new Array(58).fill(0)
+            ]);
+
+            const rleData = [];
+            for (let y = 0; y < h; y++) {
+                for (let x = 0; x < w; x++) {
+                    const i = (y * w + x) * 4;
+                    const gray = Math.round(0.299 * pixels[i] + 0.587 * pixels[i + 1] + 0.114 * pixels[i + 2]);
+                    rleData.push(gray);
+                }
+            }
+            
+            const pcxData = new Uint8Array(header.length + rleData.length);
+            pcxData.set(header);
+            pcxData.set(rleData, header.length);
+            
+            return pcxData;
+        }
+
+        function canvasToEMF(canvas) {
+            const header = new Uint8Array([
+                0x01, 0x00, 0x00, 0x00,
+                88, 0, 0, 0,
+                ...new Array(80).fill(0)
+            ]);
+            
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const pixels = imageData.data;
+            
+            const emfData = new Uint8Array(header.length + pixels.length);
+            emfData.set(header);
+            emfData.set(pixels, header.length);
+            
+            return emfData;
+        }
+
+        function createPDF(canvas) {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+    });
+
+    pdf.setFillColor(236, 55, 80); // #EC3750
+    pdf.rect(0, 0, pdf.internal.pageSize.width, 50, 'F'); // Increased header height
+
+    const loadImage = (src) => {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.src = src;
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+        });
+    };
+
+    loadImage('../static/assets/ligma/pdf/logo.png').then((titleImage) => {
+        const imgWidth = 150;
+        const imgHeight = (titleImage.height * imgWidth) / titleImage.width;
+        const x = (pdf.internal.pageSize.width - imgWidth) / 2;
+        const y = 10;
+        
+        pdf.addImage(titleImage, 'PNG', x, y, imgWidth, imgHeight);
+        
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(20);
+        pdf.setTextColor(50, 50, 50);
+        pdf.text('Enjoy the Pizza (it tastes like paper)', pdf.internal.pageSize.width / 2, 280, { align: 'center' });
+
+        const imgData = canvas.toDataURL('image/png', 1.0);
+        const pageWidth = pdf.internal.pageSize.width;
+        const imageWidth = 160;
+        const imageHeight = 160;
+        const imageX = (pageWidth - imageWidth) / 2;
+        
+        pdf.setFillColor(0, 0, 0, 0.1);
+        pdf.roundedRect(imageX - 1, 49, imageWidth + 2, imageHeight + 2, 3, 3, 'F');
+        
+        pdf.setFillColor(255, 255, 255);
+        pdf.roundedRect(imageX, 50, imageWidth, imageHeight, 2, 2, 'F');
+        pdf.addImage(imgData, 'PNG', imageX, 50, imageWidth, imageHeight);
+        
+        pdf.setFillColor(248, 249, 250); // #f8f9fa
+        pdf.roundedRect(20, 230, pageWidth - 40, 40, 2, 2, 'F');
+        
+        pdf.setTextColor(51, 214, 166); // #33d6a6
+        pdf.setFontSize(16);
+        pdf.text('Pizza Details', 30, 245);
+        
+        pdf.setTextColor(51, 51, 51);
+        pdf.setFontSize(12);
+        pdf.setFont('helvetica', 'normal');
+        
+        const base = document.getElementById('base').value;
+        const sauce = document.getElementById('sauce').value;
+        const toppings = Array.from(document.querySelectorAll('#toppings input:checked'))
+            .map(input => input.value).join(', ') || 'None';
+        
+        pdf.text(`Base: ${base}`, 30, 255);
+        pdf.text(`Sauce: ${sauce}`, 30, 262);
+        pdf.text(`Toppings: ${toppings}`, 30, 269);
+        
+        pdf.setFontSize(10);
+        pdf.setTextColor(153, 153, 153);
+        pdf.text(
+            `Generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`,
+            pdf.internal.pageSize.width/2,
+            pdf.internal.pageSize.height - 10,
+            { align: 'center' }
+        );
+        
+        pdf.save('my-universe-pizza.pdf');
+    }).catch((error) => {
+        console.error("Error loading image:", error);
+    });
+}
+
+
+        function downloadPizza(format) {
+            const pizzaDisplay = document.getElementById('pizzaDisplay');
+    
+            document.body.style.cursor = 'wait';
+            const downloadBtn = document.querySelector('button');
+            const originalText = downloadBtn.textContent;
+            downloadBtn.textContent = 'Processing...';
+            
+            html2canvas(pizzaDisplay, {
+                allowTaint: true,
+                useCORS: true,
+                backgroundColor: null,
+                scale: 2
+            }).then(canvas => {
+                if (format === 'bmp') {
+                    const bmpData = canvasToBMP(canvas);
+                    const blob = new Blob([bmpData], { type: 'image/bmp' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `my-universe-pizza.bmp`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                } else if (format === 'emf') {
+                    const emfData = canvasToEMF(canvas);
+                    const blob = new Blob([emfData], { type: 'image/emf' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `my-universe-pizza.emf`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                } else if (format === 'pcx') {
+                    const pcxData = canvasToPCX(canvas);
+                    const blob = new Blob([pcxData], { type: 'image/pcx' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `my-universe-pizza.pcx`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                } else if (format === 'tiff') {
+                    const ctx = canvas.getContext('2d');
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    
+                    const tiffArr = new Uint8Array(UTIF.encodeImage(imageData.data, canvas.width, canvas.height));
+                    const blob = new Blob([tiffArr], { type: 'image/tiff' });
+                    
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `my-universe-pizza.tiff`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+
+                } else if (format === 'tga') {
+                    const tgaData = canvasToTGA(canvas);
+                    const blob = new Blob([tgaData], { type: 'application/octet-stream' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `my-universe-pizza.tga`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                } else if (format === 'xlsx') {
+                    const excelData = createExcel(canvas);
+                    const blob = new Blob([excelData], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = 'my-universe-pizza.xlsx';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+            } else if (format === 'ppt') {
+                const pptx = createPowerPoint(canvas);
+                pptx.writeFile('my-universe-pizza.pptx');
+                } else if (format === 'raw') {
+                    const rawData = canvasToRaw(canvas);
+                    const blob = new Blob([rawData], { type: 'application/octet-stream' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `my-universe-pizza.${format}`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                } else if (format === 'pdf') {
+                    const pdf = createPDF(canvas);
+                    pdf.save('my-universe-pizza.pdf');
+                } else {
+                    let mimeType, quality;
+                    
+                    if (format === 'jpg') {
+                        mimeType = 'image/jpeg';
+                        quality = 0.9;
+                    } else if (format === 'webp') {
+                        mimeType = 'image/webp';
+                        quality = 0.8;
+                    } else {
+                        mimeType = 'image/png';
+                        quality = 1.0;
+                    }
+                    
+                    const link = document.createElement('a');
+                    link.download = `my-universe-pizza.${format}`;
+                    
+                    if (format === 'jpg') {
+                        const jpgCanvas = document.createElement('canvas');
+                        jpgCanvas.width = canvas.width;
+                        jpgCanvas.height = canvas.height;
+                        const ctx = jpgCanvas.getContext('2d');
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.fillRect(0, 0, jpgCanvas.width, jpgCanvas.height);
+                        ctx.drawImage(canvas, 0, 0);
+                        link.href = jpgCanvas.toDataURL(mimeType, quality);
+                    } else {
+                        link.href = canvas.toDataURL(mimeType, quality);
+                    }
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+                
+                document.body.style.cursor = 'default';
+                downloadBtn.textContent = originalText;
+                
+                const confirmation = document.createElement('div');
+                confirmation.textContent = `Pizza downloaded as ${format.toUpperCase()} format!`;
+                confirmation.style.color = '#33d6a6';
+                confirmation.style.fontWeight = 'bold';
+                confirmation.style.padding = '10px';
+                confirmation.style.marginTop = '10px';
+                
+                const formatSelection = document.getElementById('formatSelection');
+                formatSelection.appendChild(confirmation);
+                
+                setTimeout(() => {
+                    formatSelection.removeChild(confirmation);
+                }, 3000);
+            }).catch(error => {
+                console.error('Error generating pizza image:', error);
+                alert('Hey man, why dont you try to download it in PNG or JPG? Why can\'t you be normal?');
+                document.body.style.cursor = 'default';
+                downloadBtn.textContent = originalText;
+            });
+        }
+
+        function showDominosOrderForm() {
+            const base = document.getElementById('base').value;
+            const sauce = document.getElementById('sauce').value;
+            const toppings = Array.from(document.querySelectorAll('#toppings input:checked'))
+                .map(input => input.value).join(', ') || 'None';
+
+            const pizzaDetails = `Base: ${base}, Sauce: ${sauce}, Toppings: ${toppings}`;
+            document.getElementById('pizzaDetails').value = pizzaDetails;
+
+            document.getElementById('dominosOrder').style.display = 'block';
+        }
+
+        function redirectToDominos() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            const pizzaDetails = document.getElementById('pizzaDetails').value;
+
+            const dominosUrl = `https://www.dominos.ma/order`;
+            alert(`Redirecting to Domino's Morocco to complete your order.`);
+            window.location.href = dominosUrl;
+        }
+    </script>
+</body>
+</html>
