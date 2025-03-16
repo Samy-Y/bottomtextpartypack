@@ -304,10 +304,6 @@
                 <div>Arguments</div>
             </div>
             <div>
-                <div class="value" id="winStreak">0</div>
-                <div>Win Streak</div>
-            </div>
-            <div>
                 <div class="value" id="topicCount">1</div>
                 <div>Topics</div>
             </div>
@@ -356,12 +352,6 @@
                 
                 // Add response
                 chatBox.innerHTML += `<p><strong>AI Opponent:</strong> ${data.ai_response}</p>`;
-                
-                // Random chance of increasing win streak for demo purposes
-                if (Math.random() > 0.6) {
-                    winStreak++;
-                    document.getElementById("winStreak").textContent = winStreak;
-                }
             } catch (error) {
                 // Remove typing indicator
                 document.getElementById("typing-indicator").remove();
@@ -414,7 +404,7 @@
         window.addEventListener("DOMContentLoaded", () => {
             const topic = document.getElementById("topic").textContent;
             if (topic === "{{ topic }}") {
-                document.getElementById("topic").textContent = "Should pineapple be on pizza?";
+                getNewTopic();
             }
         });
     </script>
