@@ -6,8 +6,7 @@ import random
 app = Flask(__name__)
 
 # do NOT under any circumstances put this in the public repo
-# hehe a bit late
-GEMINI_API_KEY = "AIzaSyD3fzLjQMk9Omz_s673BnhrUvdp0kzmZ20" 
+GEMINI_API_KEY = "too late" 
 GEMINI_API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
 
 # List of argument topics
@@ -55,7 +54,7 @@ def chess_vs_checkers():
 
 @app.route('/pizzeria')
 def pizzeria():
-    return render_template('pizzeria.html')
+    return render_template('ligma.html')
 
 @app.route('/argument')
 def argument():
