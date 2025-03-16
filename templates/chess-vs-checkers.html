@@ -4,35 +4,68 @@
   <meta charset="utf-8">
   <title>Chess vs. Checkers</title>
   
-  <!-- jQuery (required by Chessboard.js) -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Hack Club Theme CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hackclub/css@c5cf9c989b8cb3d3f2e15830c0f3b3e8fb42e6eb/theme.css" />
+
   <!-- Chessboard.js -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
 
-<style>
-    /* Use Hack Club theme variables to style the page */
+  <!-- Stockfish -->
+  <script src="js/stockfish.min.js"></script>
+
+  <style>
+    /* Use Hack Club theme variables for your styling */
     body {
-      background: var(--background);
-      color: var(--text);
+      /* Subtle diagonal gradient with theme colors */
+      background: linear-gradient(
+        135deg,
+        var(--purple) 0%,
+        var(--orange) 100%
+      ) no-repeat center center fixed;
+      background-size: cover; /* Make the gradient fill the page */
+      color: var(--white);
       font-family: "Phantom Sans", system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", Roboto, sans-serif;
       margin: 0;
-      padding: var(--spacing-4);
+      padding: var(--spacing-3);
       text-align: center;
+      min-height: 100vh; /* So gradient covers full height */
+      box-sizing: border-box;
     }
 
-    h1 {
-      /* This uses hack club size & spacing */
+    h1.title {
       margin-top: var(--spacing-3);
       margin-bottom: var(--spacing-3);
+      color: var(--white);
+    }
+
+    .card-container {
+      /* A "card" style container around the board */
+      max-width: 500px;
+      margin: 0 auto; /* center horizontally */
+      background: var(--sheet); /* or var(--elevated) if you want it whiter */
+      border-radius: var(--radii-default);
+      box-shadow: var(--shadow-card);
+      padding: var(--spacing-4);
     }
 
     #board {
-      /* Center the board, add spacing */
-      margin: var(--spacing-4) auto;
+      margin: var(--spacing-3) auto;
       max-width: 400px;
+
+      /* optional subtle border around the board: */
+      border: 2px solid var(--border);
+      border-radius: var(--radii-default);
+    }
+
+    #status {
+      font-weight: var(--font-weight-bold);
+      margin-top: var(--spacing-3);
+      margin-bottom: var(--spacing-2);
+      font-size: var(--font-3);
+      color: var(--text); /* text color from theme */
     }
 
     #controls {
@@ -41,7 +74,6 @@
     }
 
     #controls button {
-      /* Use Hack Club button styling ideas */
       margin: var(--spacing-2);
       padding: var(--spacing-2) var(--spacing-3);
       font-size: var(--font-2);
@@ -60,13 +92,6 @@
       transform: scale(1.05);
     }
 
-    #status {
-      font-weight: var(--font-weight-bold);
-      margin-top: var(--spacing-3);
-      margin-bottom: var(--spacing-2);
-      font-size: var(--font-3);
-    }
-
     #logArea {
       display: none; /* Hide by default */
       background: var(--sunken);
@@ -81,25 +106,25 @@
       text-align: left;
       border-radius: var(--radii-default);
     }
-
-    /* Example: If you want a “Show Debug” button to toggle logArea,
-       you can do so in your JS. For now, it's simply hidden. */
   </style>
 </head>
 <body>
   <h1 class="title">Chess vs. Checkers</h1>
 
-  <div id="status">Loading engine...</div>
-  <div id="board"></div>
+  <div class="card-container">
+    <div id="status">Loading engine...</div>
 
-  <div id="controls">
-    <button id="resetBtn">Reset Game</button>
-    <!-- If you want a debug toggle, add something like:
-    <button id="toggleDebugBtn">Show Debug</button>
-    -->
+    <div id="board"></div>
+
+    <div id="controls">
+      <button id="resetBtn">Reset Game</button>
+      <!-- If you want a debug toggle, add something like:
+      <button id="toggleDebugBtn">Show Debug</button>
+      -->
+    </div>
   </div>
-    <pre id="logArea"></pre>
 
+  <pre id="logArea"></pre>
     <!-- Load Stockfish from local or your own path -->
     <script src="js/stockfish.min.js"></script>
 
